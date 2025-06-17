@@ -36,11 +36,12 @@ services:
       context: .
       dockerfile: socket-service/Dockerfile.dev
     ports:
-      - 8080:8080
+      - 8089:8080
     tty: true
     environment:
       NODE_ENV: development
-      PORT: 8080
+      DOCKER_CONTAINER: true
+      PORT: 8089
       POSTGRES_DB: streams-db
       POSTGRES_USER: postgress
       POSTGRES_PASSWORD: mypassword123!
