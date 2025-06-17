@@ -4,10 +4,10 @@ WORKDIR /app
 
 RUN apk add --no-cache bash curl dos2unix
 
-COPY service/package.json ./
+COPY socket-service/package.json ./
 
 RUN npm install
 
-COPY service ./
+COPY socket-service ./
 
 ENTRYPOINT [ "npm", "run", "start:dev" ]

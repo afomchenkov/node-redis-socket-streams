@@ -8,10 +8,13 @@ import { PingIndicatorService } from './services/ping.service';
 import { SettingModule } from './persistency/settings.module';
 import { SettingService } from './persistency/settings.service';
 import { DBModule } from './persistency/db.module';
+import { AppService } from './services/app.service';
 import { AppController } from './controllers/app.controller';
 import { HealthcheckController } from './controllers/healthcheck.controller';
 
 const controllers = [AppController, HealthcheckController];
+
+const providers = [PingIndicatorService, HealthService, AppService];
 
 @Module({
   imports: [
@@ -28,6 +31,6 @@ const controllers = [AppController, HealthcheckController];
     }),
   ],
   controllers,
-  providers: [PingIndicatorService, HealthService],
+  providers,
 })
 export class AppModule {}

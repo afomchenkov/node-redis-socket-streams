@@ -9,7 +9,6 @@ import { WinstonModule, utilities } from 'nest-winston';
 import { format, transports } from 'winston';
 import { dump } from 'js-yaml';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { Redis } from 'ioredis';
 import { Server, ServerOptions } from 'socket.io';
 import { AppModule } from './app.module';
 import { pubClient, subClient } from './redis.config';
@@ -36,38 +35,40 @@ const setupSwagger = async (app: INestApplication): Promise<void> => {
 };
 
 async function bootstrap() {
+  const logger = WinstonModule.createLogger({
+    level: ['development'].includes(ENV) ? 'debug' : 'info',
+    transports: [
+      new transports.Console({
+        format: ['development'].includes(ENV)
+          ? format.combine(
+              format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
+              format.ms(),
+              utilities.format.nestLike('Board Service Dev', {
+                colors: true,
+                prettyPrint: true,
+              }),
+            )
+          : format.printf((msg) => {
+              const logFormat = {
+                hostname: hostname(),
+                app: process.env.APP_NAME,
+                environment: process.env.NODE_ENV,
+                level: msg.level,
+                msg: msg.message,
+                product: 'Projects Boards Service',
+                time: new Date().toISOString(),
+              };
+
+              return JSON.stringify(logFormat);
+            }),
+      }),
+    ],
+  });
+
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     cors: true,
-    logger: WinstonModule.createLogger({
-      level: ['development'].includes(ENV) ? 'debug' : 'info',
-      transports: [
-        new transports.Console({
-          format: ['development'].includes(ENV)
-            ? format.combine(
-                format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
-                format.ms(),
-                utilities.format.nestLike('Board Service Dev', {
-                  colors: true,
-                  prettyPrint: true,
-                }),
-              )
-            : format.printf((msg) => {
-                const logFormat = {
-                  hostname: hostname(),
-                  app: process.env.APP_NAME,
-                  environment: process.env.NODE_ENV,
-                  level: msg.level,
-                  msg: msg.message,
-                  product: 'Projects Boards Service',
-                  time: new Date().toISOString(),
-                };
-
-                return JSON.stringify(logFormat);
-              }),
-        }),
-      ],
-    }),
+    logger,
   });
   app.enableCors();
 
@@ -89,10 +90,8 @@ async function bootstrap() {
     }),
   );
 
-  await Promise.all([pubClient.connect(), subClient.connect()]);
-
+  // await Promise.all([pubClient.connect(), subClient.connect()]);
   await setupSwagger(app);
-  // await app.listen(port);
   const httpServer = createServer(app.getHttpAdapter().getInstance());
 
   const serverConfig: Partial<ServerOptions> = {
@@ -103,6 +102,10 @@ async function bootstrap() {
   // Create Redis/Socket events streaming, run on the server port
   const io: Server = new Server(httpServer, serverConfig);
   io.adapter(createAdapter(pubClient, subClient));
+
+  if (logger.debug) {
+    logger.debug(`Service started at port: ${port}`);
+  }
 
   httpServer.listen(port);
 }
