@@ -1,0 +1,69 @@
+name: nodejs-redis-socket-streams
+
+services:
+  postgresql-dev:
+    image: socket-streams-db:dev
+    container_name: socket-streams-db
+    build:
+      context: ./resources/db
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d streams-db -U postgress"]
+      interval: 3s
+      timeout: 5s
+      retries: 6
+    volumes:
+      - socket-streams-db-data:/var/lib/postgresql/data
+    networks:
+      - streams-redis-network
+
+  redis-service-dev:
+    image: redis:latest
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ["redis-server"]
+
+  socket-service:
+    image: socket-service:dev
+    container_name: socket-service
+    build:
+      context: .
+      dockerfile: socket-service/Dockerfile.dev
+    ports:
+      - 8080:8080
+    tty: true
+    environment:
+      NODE_ENV: development
+      PORT: 8080
+      POSTGRES_DB: streams-db
+      POSTGRES_USER: postgress
+      POSTGRES_PASSWORD: mypassword123!
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: socket-streams-db
+      DATABASE_LOGGING: true
+    volumes:
+      - ./service:/app
+    depends_on:
+      postgresql-dev:
+        condition: service_healthy
+      redis-service-dev:
+        condition: service_healthy
+    networks:
+      - streams-redis-network
+
+networks:
+  streams-redis-network:
+    name: streams-redis-network
+    driver: bridge
+
+volumes:
+  streams-redis-data:
+    name: streams-redis-data
+  socket-streams-db-data:
+    name: socket-streams-db-data
