@@ -10,6 +10,7 @@ import { format, transports } from 'winston';
 import { dump } from 'js-yaml';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { Server, ServerOptions } from 'socket.io';
+import { WebSocketService } from './services/web-socket.service';
 import { AppModule } from './app.module';
 import { pubClient, subClient } from './redis.config';
 
@@ -36,14 +37,14 @@ const setupSwagger = async (app: INestApplication): Promise<void> => {
 
 async function bootstrap() {
   const logger = WinstonModule.createLogger({
-    level: ['development'].includes(ENV) ? 'debug' : 'info',
+    level: 'debug', // ['development'].includes(ENV) ? 'debug' : 'info',
     transports: [
       new transports.Console({
         format: ['development'].includes(ENV)
           ? format.combine(
               format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
               format.ms(),
-              utilities.format.nestLike('Board Service Dev', {
+              utilities.format.nestLike('Socket Service Dev', {
                 colors: true,
                 prettyPrint: true,
               }),
@@ -55,7 +56,7 @@ async function bootstrap() {
                 environment: process.env.NODE_ENV,
                 level: msg.level,
                 msg: msg.message,
-                product: 'Projects Boards Service',
+                product: 'Socket Service',
                 time: new Date().toISOString(),
               };
 
@@ -102,6 +103,9 @@ async function bootstrap() {
   // Create Redis/Socket events streaming, run on the server port
   const io: Server = new Server(httpServer, serverConfig);
   io.adapter(createAdapter(pubClient, subClient));
+
+  const wss: WebSocketService = app.get(WebSocketService);
+  wss.bind(io);
 
   if (logger.debug) {
     logger.debug(`Service started at port: ${port}`);

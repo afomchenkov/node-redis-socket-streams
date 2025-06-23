@@ -9,12 +9,18 @@ import { SettingModule } from './persistency/settings.module';
 import { SettingService } from './persistency/settings.service';
 import { DBModule } from './persistency/db.module';
 import { AppService } from './services/app.service';
+import { WebSocketService } from './services/web-socket.service';
 import { AppController } from './controllers/app.controller';
 import { HealthcheckController } from './controllers/healthcheck.controller';
 
 const controllers = [AppController, HealthcheckController];
 
-const providers = [PingIndicatorService, HealthService, AppService];
+const providers = [
+  PingIndicatorService,
+  HealthService,
+  AppService,
+  WebSocketService,
+];
 
 @Module({
   imports: [
