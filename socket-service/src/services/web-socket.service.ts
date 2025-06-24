@@ -16,6 +16,7 @@ export class WebSocketService {
     );
 
     this.namespace.use(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (socket: Socket, next: (error?: Error) => void) => {
         const token = socket?.handshake?.headers?.authorization || '';
         this.logger.debug(`[[socket]]: auth ${token}`);
