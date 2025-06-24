@@ -1,6 +1,7 @@
 import path from 'node:path';
 import fastifyAutoload from '@fastify/autoload';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+// import { fileURLToPath } from 'url';
 
 export const options = {
   ajv: {
@@ -10,6 +11,9 @@ export const options = {
     },
   },
 };
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 export default async function serviceApp(
   fastify: FastifyInstance,

@@ -2,6 +2,10 @@
   "name": "fastify-service",
   "version": "1.0.0",
   "main": "app.js",
+  "type": "module",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "start": "npm run build && fastify start -l info dist/app.js",
     "build": "tsc",
