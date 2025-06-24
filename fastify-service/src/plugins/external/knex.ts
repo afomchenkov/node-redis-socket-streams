@@ -1,6 +1,6 @@
-import fp from 'fastify-plugin'
-import { FastifyInstance } from 'fastify'
-import knex, { Knex } from 'knex'
+import fp from 'fastify-plugin';
+import { FastifyInstance } from 'fastify';
+import knex, { Knex } from 'knex';
 
 declare module 'fastify' {
   export interface FastifyInstance {
@@ -16,16 +16,19 @@ export const autoConfig = (fastify: FastifyInstance) => {
       user: fastify.config.MYSQL_USER,
       password: fastify.config.MYSQL_PASSWORD,
       database: fastify.config.MYSQL_DATABASE,
-      port: Number(fastify.config.MYSQL_PORT)
+      port: Number(fastify.config.MYSQL_PORT),
     },
-    pool: { min: 2, max: 10 }
-  }
-}
+    pool: { min: 2, max: 10 },
+  };
+};
 
-export default fp(async (fastify: FastifyInstance, opts) => {
-  fastify.decorate('knex', knex(opts))
+export default fp(
+  async (fastify: FastifyInstance, opts) => {
+    fastify.decorate('knex', knex(opts));
 
-  fastify.addHook('onClose', async (instance) => {
-    await instance.knex.destroy()
-  })
-}, { name: 'knex' })
+    fastify.addHook('onClose', async (instance) => {
+      await instance.knex.destroy();
+    });
+  },
+  { name: 'knex' },
+);

@@ -1,4 +1,4 @@
-import fastifyMultipart from '@fastify/multipart'
+import fastifyMultipart from '@fastify/multipart';
 
 export const autoConfig = {
   limits: {
@@ -7,13 +7,13 @@ export const autoConfig = {
     fields: 10, // Max number of non-file fields
     fileSize: 1 * 1024 * 1024, // Max file size in bytes (5 MB)
     files: 1, // Max number of file fields
-    parts: 1000 // Max number of parts
-  }
-}
+    parts: 1000, // Max number of parts
+  },
+};
 
 /**
  * This plugins allows to parse the multipart content-type
  *
  * @see {@link https://github.com/fastify/fastify-multipart}
  */
-export default fastifyMultipart
+export default fastifyMultipart;

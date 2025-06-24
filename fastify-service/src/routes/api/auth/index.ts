@@ -1,11 +1,11 @@
 import {
   FastifyPluginAsyncTypebox,
-  Type
-} from '@fastify/type-provider-typebox'
-import { CredentialsSchema } from '../../../schemas/auth.js'
+  Type,
+} from '@fastify/type-provider-typebox';
+import { CredentialsSchema } from '../../../schemas/auth.js';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
-  const { usersRepository, passwordManager } = fastify
+  const { usersRepository, passwordManager } = fastify;
   fastify.post(
     '/login',
     {
@@ -14,48 +14,51 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         response: {
           200: Type.Object({
             success: Type.Boolean(),
-            message: Type.Optional(Type.String())
+            message: Type.Optional(Type.String()),
           }),
           401: Type.Object({
-            message: Type.String()
-          })
+            message: Type.String(),
+          }),
         },
-        tags: ['Authentication']
-      }
+        tags: ['Authentication'],
+      },
     },
     async function (request, reply) {
-      const { email, password } = request.body
+      const { email, password } = request.body;
 
       return fastify.knex.transaction(async (trx) => {
-        const user = await usersRepository.findByEmail(email, trx)
+        const user = await usersRepository.findByEmail(email, trx);
 
         if (user) {
           const isPasswordValid = await passwordManager.compare(
             password,
-            user.password
-          )
+            user.password,
+          );
           if (isPasswordValid) {
-            const roles = await usersRepository.findUserRolesByEmail(email, trx)
+            const roles = await usersRepository.findUserRolesByEmail(
+              email,
+              trx,
+            );
 
             request.session.user = {
               id: user.id,
               email: user.email,
               username: user.username,
-              roles: roles.map((role) => role.name)
-            }
+              roles: roles.map((role) => role.name),
+            };
 
-            await request.session.save()
+            await request.session.save();
 
-            return { success: true }
+            return { success: true };
           }
         }
 
-        reply.status(401)
+        reply.status(401);
 
-        return { message: 'Invalid email or password.' }
-      })
-    }
-  )
-}
+        return { message: 'Invalid email or password.' };
+      });
+    },
+  );
+};
 
-export default plugin
+export default plugin;

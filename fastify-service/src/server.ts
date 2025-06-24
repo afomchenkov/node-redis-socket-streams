@@ -1,7 +1,7 @@
-import Fastify from "fastify";
-import fp from "fastify-plugin";
-import closeWithGrace from "close-with-grace";
-import serviceApp from "./app.js";
+import Fastify from 'fastify';
+import fp from 'fastify-plugin';
+import closeWithGrace from 'close-with-grace';
+import serviceApp from './app.js';
 
 /**
  * Do not use NODE_ENV to determine what logger (or any env related feature) to use
@@ -11,26 +11,26 @@ function getLoggerOptions() {
   // Only if the program is running in an interactive terminal
   if (process.stdout.isTTY) {
     return {
-      level: "info",
+      level: 'info',
       transport: {
-        target: "pino-pretty",
+        target: 'pino-pretty',
         options: {
-          translateTime: "HH:MM:ss Z",
-          ignore: "pid,hostname",
+          translateTime: 'HH:MM:ss Z',
+          ignore: 'pid,hostname',
         },
       },
     };
   }
 
-  return { level: process.env.LOG_LEVEL ?? "silent" };
+  return { level: process.env.LOG_LEVEL ?? 'silent' };
 }
 
 const app = Fastify({
   logger: getLoggerOptions(),
   ajv: {
     customOptions: {
-      coerceTypes: "array", // change type of data to match type keyword
-      removeAdditional: "all", // Remove additional body properties
+      coerceTypes: 'array', // change type of data to match type keyword
+      removeAdditional: 'all', // Remove additional body properties
     },
   },
 });
@@ -49,7 +49,7 @@ async function init() {
       }
 
       await app.close();
-    }
+    },
   );
 
   await app.ready();

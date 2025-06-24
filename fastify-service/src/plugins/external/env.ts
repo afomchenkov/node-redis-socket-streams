@@ -1,4 +1,4 @@
-import env from '@fastify/env'
+import env from '@fastify/env';
 
 declare module 'fastify' {
   export interface FastifyInstance {
@@ -29,42 +29,42 @@ const schema = {
     'MYSQL_DATABASE',
     'COOKIE_SECRET',
     'COOKIE_NAME',
-    'COOKIE_SECURED'
+    'COOKIE_SECURED',
   ],
   properties: {
     // Database
     MYSQL_HOST: {
       type: 'string',
-      default: 'localhost'
+      default: 'localhost',
     },
     MYSQL_PORT: {
       type: 'number',
-      default: 3306
+      default: 3306,
     },
     MYSQL_USER: {
-      type: 'string'
+      type: 'string',
     },
     MYSQL_PASSWORD: {
-      type: 'string'
+      type: 'string',
     },
     MYSQL_DATABASE: {
-      type: 'string'
+      type: 'string',
     },
 
     // Security
     COOKIE_SECRET: {
-      type: 'string'
+      type: 'string',
     },
     COOKIE_NAME: {
-      type: 'string'
+      type: 'string',
     },
     COOKIE_SECURED: {
       type: 'boolean',
-      default: true
+      default: true,
     },
     RATE_LIMIT_MAX: {
       type: 'number',
-      default: 100 // Put it to 4 in your .env file for tests
+      default: 100, // Put it to 4 in your .env file for tests
     },
 
     // Files
@@ -72,14 +72,14 @@ const schema = {
       type: 'string',
       minLength: 1,
       pattern: '^(?!.*\\.{2}).*$',
-      default: 'uploads'
+      default: 'uploads',
     },
     UPLOAD_TASKS_DIRNAME: {
       type: 'string',
-      default: 'tasks'
-    }
-  }
-}
+      default: 'tasks',
+    },
+  },
+};
 
 export const autoConfig = {
   // Decorate Fastify instance with `config` key
@@ -99,12 +99,12 @@ export const autoConfig = {
 
   // Source for the configuration data
   // Optional, default: process.env
-  data: process.env
-}
+  data: process.env,
+};
 
 /**
  * This plugins helps to check environment variables.
  *
  * @see {@link https://github.com/fastify/fastify-env}
  */
-export default env
+export default env;

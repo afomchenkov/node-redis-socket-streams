@@ -1,25 +1,25 @@
-import path from "node:path";
-import fastifyAutoload from "@fastify/autoload";
-import { FastifyInstance, FastifyPluginOptions } from "fastify";
+import path from 'node:path';
+import fastifyAutoload from '@fastify/autoload';
+import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 export const options = {
   ajv: {
     customOptions: {
-      coerceTypes: "array",
-      removeAdditional: "all",
+      coerceTypes: 'array',
+      removeAdditional: 'all',
     },
   },
 };
 
 export default async function serviceApp(
   fastify: FastifyInstance,
-  opts: FastifyPluginOptions
+  opts: FastifyPluginOptions,
 ) {
   delete opts.skipOverride; // This option only serves testing purpose
   // This loads all external plugins defined in plugins/external
   // those should be registered first as your application plugins might depend on them
   await fastify.register(fastifyAutoload, {
-    dir: path.join(import.meta.dirname, "plugins/external"),
+    dir: path.join(import.meta.dirname, 'plugins/external'),
     options: { ...opts },
   });
 
@@ -27,14 +27,13 @@ export default async function serviceApp(
   // those should be support plugins that are reused
   // through your application
   fastify.register(fastifyAutoload, {
-    dir: path.join(import.meta.dirname, "plugins/app"),
+    dir: path.join(import.meta.dirname, 'plugins/app'),
     options: { ...opts },
   });
 
   // This loads all plugins defined in routes
-  // define your routes in one of these
   fastify.register(fastifyAutoload, {
-    dir: path.join(import.meta.dirname, "routes"),
+    dir: path.join(import.meta.dirname, 'routes'),
     autoHooks: true,
     cascadeHooks: true,
     options: { ...opts },
@@ -51,12 +50,12 @@ export default async function serviceApp(
           params: request.params,
         },
       },
-      "Unhandled error occurred"
+      'Unhandled error occurred',
     );
 
     reply.code(err.statusCode ?? 500);
 
-    let message = "Internal Server Error";
+    let message = 'Internal Server Error';
     if (err.statusCode && err.statusCode < 500) {
       message = err.message;
     }
@@ -82,12 +81,12 @@ export default async function serviceApp(
             params: request.params,
           },
         },
-        "Resource not found"
+        'Resource not found',
       );
 
       reply.code(404);
 
-      return { message: "Not Found" };
-    }
+      return { message: 'Not Found' };
+    },
   );
 }

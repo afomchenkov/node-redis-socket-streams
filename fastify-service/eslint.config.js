@@ -1,4 +1,4 @@
-import neo from "neostandard";
+import neo from 'neostandard';
 
 export default [
   ...neo({
@@ -6,17 +6,9 @@ export default [
   }),
   {
     rules: {
-      "@stylistic/comma-dangle": "off",
-      "@stylistic/comma-dangle": [
-        "error",
-        {
-          arrays: "never",
-          objects: "never",
-          imports: "never",
-          exports: "never",
-          functions: "never",
-        },
-      ],
+      '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+      '@stylistic/comma-dangle': 'off',
+      '@stylistic/semi': 'off',
     },
   },
 ];

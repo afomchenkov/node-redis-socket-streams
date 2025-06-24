@@ -1,6 +1,6 @@
-import fp from 'fastify-plugin'
-import fastifySwaggerUi from '@fastify/swagger-ui'
-import fastifySwagger from '@fastify/swagger'
+import fp from 'fastify-plugin';
+import fastifySwaggerUi from '@fastify/swagger-ui';
+import fastifySwagger from '@fastify/swagger';
 
 export default fp(async function (fastify) {
   /**
@@ -14,10 +14,10 @@ export default fp(async function (fastify) {
       info: {
         title: 'Fastify demo API',
         description: 'The official Fastify demo API',
-        version: '0.0.0'
-      }
-    }
-  })
+        version: '0.0.0',
+      },
+    },
+  });
 
   /**
    * A Fastify plugin for serving Swagger UI.
@@ -25,6 +25,6 @@ export default fp(async function (fastify) {
    * @see {@link https://github.com/fastify/fastify-swagger-ui}
    */
   await fastify.register(fastifySwaggerUi, {
-    routePrefix: '/api/docs'
-  })
-})
+    routePrefix: '/api/docs',
+  });
+});

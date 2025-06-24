@@ -1,7 +1,7 @@
 import {
   FastifyPluginAsyncTypebox,
-  Type
-} from '@fastify/type-provider-typebox'
+  Type,
+} from '@fastify/type-provider-typebox';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
   fastify.get(
@@ -10,15 +10,15 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
       schema: {
         response: {
           200: Type.Object({
-            message: Type.String()
-          })
-        }
-      }
+            message: Type.String(),
+          }),
+        },
+      },
     },
     async function () {
-      return { message: 'Welcome to the official fastify demo!' }
-    }
-  )
-}
+      return { message: 'Welcome' };
+    },
+  );
+};
 
-export default plugin
+export default plugin;
